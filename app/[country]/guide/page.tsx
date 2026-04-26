@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import AssistantWindow from '@/components/assistant/AssistantWindow'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
 export default function GuidePage() {
   const params = useParams()
@@ -40,20 +41,22 @@ export default function GuidePage() {
   )
 
   return (
-    <main style={{
-      minHeight: '100vh',
-      background: 'var(--background)',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <Navbar />
-      <div style={{ paddingTop: '64px', flex: 1, display: 'flex',
-        flexDirection: 'column' }}>
-        <AssistantWindow 
-          countryName={countryName} 
-          language={language} 
-        />
-      </div>
-    </main>
+    <ProtectedRoute>
+      <main style={{
+        minHeight: '100vh',
+        background: 'var(--background)',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <Navbar />
+        <div style={{ paddingTop: '100px', paddingBottom: '40px', flex: 1, display: 'flex',
+          flexDirection: 'column' }} className="px-[16px] sm:px-[24px]">
+          <AssistantWindow 
+            countryName={countryName} 
+            language={language} 
+          />
+        </div>
+      </main>
+    </ProtectedRoute>
   )
 }

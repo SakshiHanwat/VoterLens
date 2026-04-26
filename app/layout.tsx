@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, Geist } from "next/font/google";
 import "./globals.css";
 import { LazyMotion, domAnimation } from "framer-motion";
+import { AuthProvider } from "@/context/AuthContext";
 
 const instrumentSerif = Instrument_Serif({
   weight: ["400"],
@@ -33,7 +34,9 @@ export default function RootLayout({
       >
         <LazyMotion features={domAnimation}>
           <main className="flex-1 flex flex-col">
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </main>
         </LazyMotion>
       </body>

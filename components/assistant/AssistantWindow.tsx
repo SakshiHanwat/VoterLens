@@ -131,6 +131,11 @@ export default function AssistantWindow({
     setCurrentStep(0)
     setMessages([])
 
+    if (path.id === 'quiz') {
+      window.location.href = `/${countryName.toLowerCase()}/quiz`
+      return
+    }
+
     if (path.id === 'custom') {
       const welcomeMsg: Message = {
         id: Date.now().toString(),
@@ -221,15 +226,15 @@ export default function AssistantWindow({
     currentStep < (STEP_PROMPTS[selectedPath.id]?.length || 0)
 
   return (
-    <div style={{
+    <div className="px-2 sm:px-4" style={{
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      height: 'calc(100vh - 64px)',
+      minHeight: showPathSelector ? 'auto' : 'calc(100vh - 64px)',
+      height: showPathSelector ? 'auto' : 'calc(100vh - 64px)',
       maxWidth: '800px',
       margin: '0 auto',
-      width: '100%',
-      padding: '0 16px'
+      width: '100%'
     }}>
 
       {/* Top bar */}
@@ -314,7 +319,7 @@ export default function AssistantWindow({
       {/* Main content area */}
       <div style={{
         flex: 1,
-        overflowY: 'auto',
+        overflowY: showPathSelector ? 'visible' : 'auto',
         padding: '24px 0',
         display: 'flex',
         flexDirection: 'column',

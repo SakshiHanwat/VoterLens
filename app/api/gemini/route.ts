@@ -4,44 +4,61 @@ export async function POST(req: NextRequest) {
   try {
     const { systemPrompt, userMessage, country, language } = await req.json()
 
-    if (!process.env.GEMINI_API_KEY || 
-        process.env.GEMINI_API_KEY === 'placeholder') {
+    const apiKey = process.env.GEMINI_API_KEY
+
+    if (!apiKey || apiKey === 'placeholder' || apiKey.trim() === '') {
       return NextResponse.json({
-        text: `I'm VoterLens AI! To get real election information 
-        for ${country}, please add your Gemini API key to .env.local. 
-        Get a free key at aistudio.google.com`,
+        text: 'Please add your Gemini API key to .env.local.',
         error: false
       })
     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `${systemPrompt}\n\nUser: ${userMessage}`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1000,
-          }
-        })
-      }
-    )
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey.trim()
 
-    const data = await response.json()
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 
-      'Sorry, I could not get a response. Please try again.'
+    const geminiRes = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: systemPrompt + '\n\nUser question: ' + userMessage
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 800,
+        }
+      })
+    })
+
+    const data = await geminiRes.json()
+
+    if (!geminiRes.ok) {
+      return NextResponse.json({
+        text: 'API Error: ' + (data?.error?.message || 'Gemini call failed'),
+        error: true
+      })
+    }
+
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+
+    if (!text) {
+      return NextResponse.json({
+        text: 'No response from Gemini. Please try again.',
+        error: true
+      })
+    }
 
     return NextResponse.json({ text, error: false })
-  } catch (error) {
-    return NextResponse.json({ 
-      text: 'Something went wrong. Please try again.',
-      error: true 
+
+  } catch (error: any) {
+    return NextResponse.json({
+      text: 'Error: ' + (error?.message || 'Something went wrong'),
+      error: true
     })
   }
 }

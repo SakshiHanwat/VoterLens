@@ -43,8 +43,9 @@ export default function MessageBubble({
         }
       </div>
 
-      <div style={{
-        maxWidth: '75%',
+      <div 
+        className="max-w-[90%] sm:max-w-[75%]"
+        style={{
         background: isUser ? 'var(--accent)' : 'var(--surface)',
         border: isUser ? 'none' : '1px solid var(--border)',
         borderRadius: isUser 

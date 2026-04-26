@@ -2,13 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { countries } from '@/lib/countries';
+import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 export default function HeroSection() {
   const [currentCountryIndex, setCurrentCountryIndex] = useState(0);
   const [typedText, setTypedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
+  const [lastCountry, setLastCountry] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedCountry = localStorage.getItem('voterlens_country_name');
+    if (savedCountry) {
+      setLastCountry(savedCountry.toLowerCase().split(' ').join('-'));
+    }
+  }, []);
 
   useEffect(() => {
     const currentWord = countries[currentCountryIndex]?.name || 'India';
@@ -99,41 +110,83 @@ export default function HeroSection() {
         }}
       >
         {/* Pill Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0 }}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: '#111118',
-            border: '1px solid #1e1e2e',
-            borderRadius: '100px',
-            padding: '6px 14px',
-            marginBottom: '32px',
-          }}
-        >
-          <div
+        {user ? (
+          <Link href={lastCountry ? `/${lastCountry}/guide` : '#country-picker'} style={{ textDecoration: 'none' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0 }}
+              whileHover={{ scale: 1.02 }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(91, 110, 245, 0.1)',
+                border: '1px solid rgba(91, 110, 245, 0.3)',
+                borderRadius: '100px',
+                padding: '6px 14px',
+                marginBottom: '32px',
+                cursor: 'pointer'
+              }}
+            >
+              <div
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#5b6ef5',
+                  animation: 'pulse-dot 2s infinite',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '13px',
+                  color: '#5b6ef5',
+                  fontWeight: 500,
+                }}
+              >
+                Welcome back, {user.displayName?.split(' ')[0] || 'User'}!
+              </span>
+              <ArrowRight size={14} color="#5b6ef5" />
+            </motion.div>
+          </Link>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0 }}
             style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#5b6ef5',
-              animation: 'pulse-dot 2s infinite',
-            }}
-          />
-          <span
-            style={{
-              fontSize: '12px',
-              color: '#9090a8',
-              letterSpacing: '1px',
-              textTransform: 'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#111118',
+              border: '1px solid #1e1e2e',
+              borderRadius: '100px',
+              padding: '6px 14px',
+              marginBottom: '32px',
             }}
           >
-            AI-powered civic education
-          </span>
-        </motion.div>
+            <div
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#5b6ef5',
+                animation: 'pulse-dot 2s infinite',
+              }}
+            />
+            <span
+              style={{
+                fontSize: '12px',
+                color: '#9090a8',
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+              }}
+            >
+              AI-powered civic education
+            </span>
+          </motion.div>
+        )}
 
         {/* Headline */}
         <motion.div
