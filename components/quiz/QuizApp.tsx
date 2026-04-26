@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Timer from './Timer'
 import ScoreScreen from './ScoreScreen'
+import { useAuth } from '@/context/AuthContext'
+import { addXP } from '@/lib/xp'
 
 interface Question {
   question: string
@@ -19,6 +21,7 @@ export default function QuizApp({ countryName, language }: { countryName: string
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
   const [error, setError] = useState('')
+  const { user } = useAuth()
 
   const fetchQuestions = async () => {
     setLoading(true)
@@ -58,7 +61,11 @@ export default function QuizApp({ countryName, language }: { countryName: string
         setCurrentIdx(i => i + 1)
         setSelectedOption(null)
       } else {
-        window.location.href = `/${countryName.toLowerCase()}/badge?score=${score}`
+        const finalScore = index === questions[currentIdx].correctIndex ? score + 1 : score;
+        if (finalScore === 8 && user) {
+          addXP(user.uid, 200, user.displayName || 'User', user.photoURL)
+        }
+        window.location.href = `/${countryName.toLowerCase()}/badge?score=${finalScore}`
       }
     }, 2000)
   }

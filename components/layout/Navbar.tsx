@@ -6,15 +6,18 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X, User as UserIcon, Trophy, LogOut, Globe } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage, LANGUAGES } from '@/context/LanguageContext';
 
 export default function Navbar() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const { language, setLanguage } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
@@ -70,18 +73,42 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden sm:flex items-center">
+        <div className="hidden sm:flex items-center gap-4">
+          <div className="relative">
+            <button 
+              onClick={() => { setShowLanguageDropdown(!showLanguageDropdown); setShowDropdown(false); }}
+              className="flex items-center gap-2 text-[#f0f0f5] hover:text-[#5b6ef5] transition-colors"
+            >
+              <Globe size={18} />
+              <span className="text-[14px] font-medium">{LANGUAGES.find(l => l.name === language)?.code.toUpperCase() || 'EN'}</span>
+            </button>
+            {showLanguageDropdown && (
+              <div className="absolute right-0 mt-4 w-32 bg-[#111118] border border-[#2a2a3e] rounded-[12px] shadow-xl overflow-hidden z-50">
+                {LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => { setLanguage(lang.name); setShowLanguageDropdown(false); }}
+                    className={`w-full text-left px-4 py-2 text-[14px] transition-colors ${language === lang.name ? 'bg-[#5b6ef5] text-white' : 'text-[#c0c0d0] hover:bg-[#1e1e2e] hover:text-[#f0f0f5]'}`}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {loading ? null : !user ? (
             <button
               onClick={() => router.push('/login')}
-              className="flex items-center gap-2 text-[14px] font-medium bg-[#5b6ef5] text-white rounded-[8px] px-[20px] py-[8px] hover:bg-[#4a5cd4] transition-colors"
+              className="flex items-center gap-2 text-[14px] font-medium bg-[#5b6ef5] text-white rounded-[8px] hover:bg-[#4a5cd4] transition-colors"
+              style={{ padding: '8px 20px' }}
             >
               Sign in
             </button>
           ) : (
             <div className="relative">
               <button
-                onClick={() => setShowDropdown(!showDropdown)}
+                onClick={() => { setShowDropdown(!showDropdown); setShowLanguageDropdown(false); }}
                 className="flex items-center gap-2"
               >
                 {user.photoURL ? (
@@ -104,20 +131,51 @@ export default function Navbar() {
               </button>
 
               {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#111118] border border-[#1e1e2e] rounded-[8px] overflow-hidden shadow-lg py-1">
-                  <button
-                    className="w-full text-left px-4 py-2 text-[14px] text-[#f0f0f5] hover:bg-[#1a1a28] transition-colors"
-                  >
-                    My progress
-                  </button>
-                  <div className="h-[1px] bg-[#1e1e2e] my-1" />
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full text-left px-4 py-2 text-[14px] text-[#ef4444] hover:bg-[#1a1a28] transition-colors"
-                  >
-                    Sign out
-                  </button>
-                </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  className="absolute right-0 mt-2 flex flex-col z-50 overflow-hidden"
+                  style={{ width: '240px', background: '#111118', border: '1px solid #2a2a3e', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(91, 110, 245, 0.1)' }}
+                >
+                  <div style={{ padding: '12px 16px', background: '#161622', borderBottom: '1px solid #2a2a3e' }}>
+                    <p style={{ fontSize: '11px', color: '#9090a8', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, margin: '0 0 4px' }}>Signed in as</p>
+                    <p style={{ fontSize: '13px', color: '#f0f0f5', fontWeight: 500, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</p>
+                  </div>
+
+                  <div style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <button
+                      onClick={() => { router.push('/profile'); setShowDropdown(false); }}
+                      style={{ width: '100%', textAlign: 'left', padding: '8px 12px', fontSize: '14px', color: '#c0c0d0', background: 'transparent', border: 'none', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseOver={(e) => { e.currentTarget.style.color = '#f0f0f5'; e.currentTarget.style.background = '#1e1e2e'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.color = '#c0c0d0'; e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <UserIcon size={16} color="#9090a8" /> My Profile
+                    </button>
+                    <button
+                      onClick={() => { router.push('/leaderboard'); setShowDropdown(false); }}
+                      style={{ width: '100%', textAlign: 'left', padding: '8px 12px', fontSize: '14px', color: '#c0c0d0', background: 'transparent', border: 'none', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseOver={(e) => { e.currentTarget.style.color = '#f0f0f5'; e.currentTarget.style.background = '#1e1e2e'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.color = '#c0c0d0'; e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <Trophy size={16} color="#9090a8" /> Leaderboard
+                    </button>
+                  </div>
+
+                  <div style={{ height: '1px', background: '#2a2a3e', width: '100%' }} />
+                  
+                  <div style={{ padding: '8px' }}>
+                    <button
+                      onClick={handleSignOut}
+                      style={{ width: '100%', textAlign: 'left', padding: '8px 12px', fontSize: '14px', color: '#ef4444', background: 'transparent', border: 'none', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <LogOut size={16} /> Sign out
+                    </button>
+                  </div>
+                </motion.div>
               )}
             </div>
           )}
@@ -137,10 +195,23 @@ export default function Navbar() {
         {/* Mobile Menu Dropdown */}
         {showMobileMenu && (
           <div className="sm:hidden absolute top-[64px] left-0 right-0 bg-[#111118] border-b border-[#1e1e2e] p-4 flex flex-col gap-4 shadow-xl">
+            <div className="flex flex-wrap gap-2 pb-4 border-b border-[#1e1e2e]">
+              {LANGUAGES.map(lang => (
+                <button
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.name)}
+                  className={`px-3 py-1.5 rounded-[8px] text-[13px] font-medium border ${language === lang.name ? 'bg-[#5b6ef5] border-[#5b6ef5] text-white' : 'bg-transparent border-[#2a2a3e] text-[#9090a8]'}`}
+                >
+                  {lang.name}
+                </button>
+              ))}
+            </div>
+
             {loading ? null : !user ? (
               <button
                 onClick={() => { router.push('/login'); setShowMobileMenu(false); }}
-                className="w-full flex items-center justify-center gap-2 text-[14px] font-medium bg-[#5b6ef5] text-white rounded-[8px] px-[16px] py-[12px]"
+                className="w-full flex items-center justify-center gap-2 text-[14px] font-medium bg-[#5b6ef5] text-white rounded-[8px]"
+                style={{ padding: '12px 16px' }}
               >
                 Sign in
               </button>
@@ -158,6 +229,18 @@ export default function Navbar() {
                     {user.displayName || 'User'}
                   </span>
                 </div>
+                <button
+                  onClick={() => { router.push('/profile'); setShowMobileMenu(false); }}
+                  className="w-full text-left px-2 py-2 text-[15px] text-[#f0f0f5] font-medium"
+                >
+                  My Profile
+                </button>
+                <button
+                  onClick={() => { router.push('/leaderboard'); setShowMobileMenu(false); }}
+                  className="w-full text-left px-2 py-2 text-[15px] text-[#f0f0f5] font-medium"
+                >
+                  Leaderboard
+                </button>
                 <button
                   onClick={() => { handleSignOut(); setShowMobileMenu(false); }}
                   className="w-full text-left px-2 py-2 text-[15px] text-[#ef4444] font-medium"

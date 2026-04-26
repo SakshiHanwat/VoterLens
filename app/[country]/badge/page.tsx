@@ -8,6 +8,8 @@ import { countries } from '@/lib/countries'
 import Navbar from '@/components/layout/Navbar'
 import html2canvas from 'html2canvas'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { useAuth } from '@/context/AuthContext'
+import { addXP, awardBadge } from '@/lib/xp'
 
 export default function BadgePage() {
   const params = useParams()
@@ -18,7 +20,9 @@ export default function BadgePage() {
   const [countryFlag, setCountryFlag] = useState('')
   const [score, setScore] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [xpAwarded, setXpAwarded] = useState(false)
   const badgeRef = useRef<HTMLDivElement>(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     const slug = params.country as string
@@ -30,7 +34,19 @@ export default function BadgePage() {
 
     const s = parseInt(searchParams.get('score') || '0', 10)
     setScore(s)
-  }, [params.country, searchParams])
+
+    // Calculate badge title
+    let title = ''
+    if (s <= 3) title = 'Civic Newcomer'
+    else if (s <= 5) title = 'Informed Voter'
+    else if (s <= 7) title = 'Democracy Champion'
+    else title = 'Election Expert'
+
+    if (user && name) {
+      awardBadge(user.uid, name, title)
+    }
+
+  }, [params.country, searchParams, user])
 
   let badgeTitle = ''
   let badgeColor = ''
@@ -59,6 +75,10 @@ export default function BadgePage() {
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
+      if (!xpAwarded && user) {
+        addXP(user.uid, 100, user.displayName || 'User', user.photoURL)
+        setXpAwarded(true)
+      }
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy', err)
@@ -74,6 +94,10 @@ export default function BadgePage() {
       a.href = url
       a.download = `VoterLens_${countryName}_Badge.png`
       a.click()
+      if (!xpAwarded && user) {
+        addXP(user.uid, 100, user.displayName || 'User', user.photoURL)
+        setXpAwarded(true)
+      }
     } catch (err) {
       console.error('Failed to download image', err)
     }

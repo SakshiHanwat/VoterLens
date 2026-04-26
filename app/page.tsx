@@ -5,6 +5,7 @@ import CountryPicker from '@/components/landing/CountryPicker'
 import HowItWorks from '@/components/landing/HowItWorks'
 import MarqueeStrip from '@/components/landing/MarqueeStrip'
 import CTASection from '@/components/landing/CTASection'
+import GlobalChat from '@/components/chat/GlobalChat'
 
 export default function Home() {
   return (
@@ -37,6 +38,7 @@ export default function Home() {
       <MarqueeStrip />
       <CTASection />
       <Footer />
+      <GlobalChat />
     </main>
   )
 }

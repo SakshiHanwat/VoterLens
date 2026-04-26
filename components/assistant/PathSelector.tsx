@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import {
   FileText, MapPin, CheckSquare,
-  BarChart2, HelpCircle, ArrowRight, Trophy
+  BarChart2, HelpCircle, ArrowRight, Trophy, Shield
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -57,6 +57,13 @@ const PATHS = [
     totalSteps: 0
   },
   {
+    id: 'verify',
+    title: 'Fact Checker',
+    description: 'Verify WhatsApp forwards and claims',
+    icon: <Shield size={18} />,
+    totalSteps: 0
+  },
+  {
     id: 'quiz',
     title: 'Take the Quiz',
     description: 'Test your knowledge and earn a badge',
@@ -72,9 +79,13 @@ export default function PathSelector({
   const router = useRouter()
 
   const handleClick = (path: typeof PATHS[0]) => {
+    const slug = countryName.toLowerCase().split(' ').join('-')
     if (path.id === 'quiz') {
-      const slug = countryName.toLowerCase().split(' ').join('-')
       router.push(`/${slug}/quiz`)
+      return
+    }
+    if (path.id === 'verify') {
+      router.push(`/${slug}/verify`)
       return
     }
     onSelectPath(path)

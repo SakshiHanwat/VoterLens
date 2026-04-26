@@ -7,6 +7,9 @@ import MessageBubble from './MessageBubble'
 import TypingIndicator from './TypingIndicator'
 import PathSelector from './PathSelector'
 import ProgressBar from './ProgressBar'
+import { useAuth } from '@/context/AuthContext'
+import { addXP } from '@/lib/xp'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Message {
   id: string
@@ -24,7 +27,6 @@ interface Path {
 
 interface AssistantWindowProps {
   countryName: string
-  language: string
 }
 
 const SYSTEM_PROMPT = (country: string, language: string, pathId: string) => `
@@ -77,8 +79,9 @@ const STEP_PROMPTS: Record<string, string[]> = {
 }
 
 export default function AssistantWindow({ 
-  countryName, language 
+  countryName 
 }: AssistantWindowProps) {
+  const { language } = useLanguage()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -86,9 +89,11 @@ export default function AssistantWindow({
   const [currentStep, setCurrentStep] = useState(0)
   const [isListening, setIsListening] = useState(false)
   const [showPathSelector, setShowPathSelector] = useState(true)
+  const [xpAwarded, setXpAwarded] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const recognitionRef = useRef<any>(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -130,6 +135,7 @@ export default function AssistantWindow({
     setShowPathSelector(false)
     setCurrentStep(0)
     setMessages([])
+    setXpAwarded(false)
 
     if (path.id === 'quiz') {
       window.location.href = `/${countryName.toLowerCase()}/quiz`
@@ -174,6 +180,13 @@ export default function AssistantWindow({
       }
       setMessages(prev => [...prev, userMsg])
       setCurrentStep(prev => prev + 1)
+      
+      // Award XP if this is the final step
+      if (nextStepIndex + 1 >= steps.length && !xpAwarded && user) {
+        addXP(user.uid, 50, user.displayName || 'User', user.photoURL)
+        setXpAwarded(true)
+      }
+
       await callGemini(question, selectedPath.id)
     }
   }
