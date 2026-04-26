@@ -83,18 +83,95 @@ export default function Navbar() {
               <span className="text-[14px] font-medium">{LANGUAGES.find(l => l.name === language)?.code.toUpperCase() || 'EN'}</span>
             </button>
             {showLanguageDropdown && (
-              <div className="absolute right-0 mt-4 w-32 bg-[#111118] border border-[#2a2a3e] rounded-[12px] shadow-xl overflow-hidden z-50">
-                {LANGUAGES.map(lang => (
-                  <button
-                    key={lang.code}
-                    onClick={() => { setLanguage(lang.name); setShowLanguageDropdown(false); }}
-                    className={`w-full text-left px-4 py-2 text-[14px] transition-colors ${language === lang.name ? 'bg-[#5b6ef5] text-white' : 'text-[#c0c0d0] hover:bg-[#1e1e2e] hover:text-[#f0f0f5]'}`}
-                  >
-                    {lang.name}
-                  </button>
-                ))}
-              </div>
-            )}
+  <motion.div
+    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ duration: 0.15, ease: 'easeOut' }}
+    style={{
+      position: 'absolute',
+      right: 0,
+      top: '40px',
+      width: '200px',
+      background: '#111118',
+      border: '1px solid #2a2a3e',
+      borderRadius: '16px',
+      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+      zIndex: 50,
+      overflow: 'hidden'
+    }}
+  >
+    {/* Header */}
+    <div style={{
+      padding: '10px 16px',
+      borderBottom: '1px solid #1e1e2e',
+      background: '#161622'
+    }}>
+      <p style={{
+        fontSize: '11px',
+        color: '#9090a8',
+        textTransform: 'uppercase',
+        letterSpacing: '1px',
+        fontWeight: 600,
+        margin: 0
+      }}>
+        Language
+      </p>
+    </div>
+
+    {/* Scrollable list */}
+    <div style={{
+      maxHeight: '240px',
+      overflowY: 'auto',
+      padding: '6px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '2px'
+    }}>
+      {LANGUAGES.map(lang => (
+        <button
+          key={lang.code}
+          onClick={() => {
+            setLanguage(lang.name)
+            setShowLanguageDropdown(false)
+          }}
+          style={{
+            width: '100%',
+            textAlign: 'left',
+            padding: '8px 12px',
+            fontSize: '13px',
+            color: language === lang.name ? 'white' : '#c0c0d0',
+            background: language === lang.name ? '#5b6ef5' : 'transparent',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            fontWeight: language === lang.name ? 500 : 400,
+            transition: 'all 0.15s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+          onMouseEnter={e => {
+            if (language !== lang.name) {
+              e.currentTarget.style.background = '#1e1e2e'
+              e.currentTarget.style.color = '#f0f0f5'
+            }
+          }}
+          onMouseLeave={e => {
+            if (language !== lang.name) {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.color = '#c0c0d0'
+            }
+          }}
+        >
+          <span>{lang.name}</span>
+          {language === lang.name && (
+            <span style={{ fontSize: '12px' }}>✓</span>
+          )}
+        </button>
+      ))}
+    </div>
+  </motion.div>
+)}
           </div>
 
           {loading ? null : !user ? (
