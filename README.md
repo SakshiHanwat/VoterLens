@@ -1,117 +1,93 @@
-# VoterLens 🗳️
+# VoterLens
 
-> **Your vote. Your voice. Understand it.**
+> Your vote. Your voice. Understand it.
 
-VoterLens is an AI-powered civic education assistant that helps users from any country understand their local election process — step by step, in their own language.
+A civic education platform that helps users from any country understand their local election process through personalized, interactive, step-by-step guidance.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-voter--lens--yhl8.vercel.app-5b6ef5?style=for-the-badge&logo=vercel)](https://voter-lens-yhl8.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
-[![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-orange?style=for-the-badge&logo=firebase)](https://firebase.google.com)
-[![Gemini AI](https://img.shields.io/badge/Gemini-AI%20Powered-blue?style=for-the-badge&logo=google)](https://ai.google.dev)
+**Live:** https://voter-lens-yhl8.vercel.app
 
 ---
 
-## 🌍 What is VoterLens?
+## Overview
 
-Most people don't vote because they don't understand the process. VoterLens solves this by providing a personalized, conversational AI guide for elections in **195 countries** — not a Wikipedia page, not a textbook, but a real step-by-step interactive assistant that speaks your language.
-
----
-
-## ✨ Features
-
-- 🌐 **195 Countries Supported** — Personalized election guide for every country in the world
-- 🤖 **Gemini AI Assistant** — Real-time answers powered by Google's Gemini AI
-- 🗺️ **5 Learning Paths** — Voter Registration, Election Process, Voting Day, Vote Counting, Free Q&A
-- 🎯 **Civic Quiz** — Test your knowledge with AI-generated questions per country
-- 🏆 **Badge System** — Earn badges: Civic Newcomer → Informed Voter → Democracy Champion → Election Expert
-- 🎤 **Voice Input** — Ask questions using your microphone
-- 🌏 **Multi-language** — Support for 22+ languages including Hindi, Spanish, Arabic, and more
-- 🔐 **Authentication** — Google Sign-In, Email/Password, Phone OTP
-- 📱 **PWA Ready** — Works on mobile like a native app
-- ⚡ **Real-time** — Instant AI responses with typing indicators
+VoterLens provides a conversational guide for elections across 195 countries. Users select their country and language, then explore structured learning paths covering voter registration, the election process, voting day, and vote counting — or ask their own questions freely.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion v11 |
-| AI | Google Gemini AI |
-| Auth | Firebase Authentication |
-| Database | Cloud Firestore |
-| Deployment | Vercel |
-| Voice | Web Speech API |
-| Fonts | Instrument Serif + Geist Sans |
+- Personalized election guide for 195 countries
+- Conversational step-by-step learning paths
+- Real-time AI-powered Q&A
+- Voice input support
+- Civic knowledge quiz with scoring and badges
+- Multi-language support across 22+ languages
+- Google, Email/Password, and Phone OTP authentication
+- Protected routes — authentication required to access guides
+- Fully responsive across mobile and desktop
 
 ---
 
-## 📸 Screenshots
+## Tech Stack
 
-### Landing Page
-> Beautiful dark editorial design with typewriter animation cycling through 195 countries
-
-### AI Assistant
-> Conversational guide with 5 learning paths, progress tracking, and voice input
-
-### Quiz Page
-> Gamified civic knowledge quiz with countdown timer and badge rewards
+```
+Framework       Next.js 15 (App Router)
+Language        TypeScript
+Styling         Tailwind CSS v4
+Animations      Framer Motion v11
+Authentication  Firebase Auth
+Database        Cloud Firestore
+AI              Google Gemini API
+Deployment      Vercel
+Voice           Web Speech API
+```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Firebase project
-- Google Gemini API key
 
-### Installation
+- Node.js 18 or higher
+- npm
+- Firebase project
+- Gemini API key from Google AI Studio
+
+### Clone and Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/SakshiHanwat/VoterLens.git
-
-# Navigate to project
 cd VoterLens
-
-# Install dependencies
 npm install
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file in the root directory:
+Create a `.env.local` file in the root of the project:
 
 ```env
-# Gemini AI
-GEMINI_API_KEY=your_gemini_api_key
+GEMINI_API_KEY=
 
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-# Google Maps (optional)
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
+GOOGLE_TRANSLATE_API_KEY=
 ```
 
-### Run Development Server
+### Run Locally
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000)
 
-### Build for Production
+### Production Build
 
 ```bash
 npm run build
@@ -120,134 +96,174 @@ npm start
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 voterlens/
+│
 ├── app/
-│   ├── page.tsx                 # Landing page
-│   ├── login/page.tsx           # Authentication
+│   ├── layout.tsx
+│   ├── page.tsx                        # Landing page
+│   ├── globals.css
+│   │
+│   ├── login/
+│   │   └── page.tsx                    # Authentication page
+│   │
 │   ├── [country]/
-│   │   ├── guide/page.tsx       # AI Assistant (core)
-│   │   ├── quiz/page.tsx        # Civic quiz
-│   │   └── badge/page.tsx       # Badge/certificate
+│   │   ├── guide/
+│   │   │   └── page.tsx                # AI assistant guide
+│   │   ├── quiz/
+│   │   │   └── page.tsx                # Civic quiz
+│   │   └── badge/
+│   │       └── page.tsx                # Badge and certificate
+│   │
 │   └── api/
-│       ├── gemini/route.ts      # Gemini AI endpoint
-│       └── quiz/route.ts        # Quiz generation
+│       ├── gemini/
+│       │   └── route.ts                # Gemini API route
+│       └── quiz/
+│           └── route.ts                # Quiz generation route
+│
 ├── components/
-│   ├── layout/                  # Navbar, Footer
-│   ├── landing/                 # Hero, CountryPicker, HowItWorks
-│   ├── assistant/               # Chat UI, PathSelector, ProgressBar
-│   ├── quiz/                    # Quiz components
-│   └── auth/                    # Login, ProtectedRoute
+│   ├── layout/
+│   │   ├── Navbar.tsx
+│   │   └── Footer.tsx
+│   │
+│   ├── landing/
+│   │   ├── HeroSection.tsx
+│   │   ├── CountryPicker.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── MarqueeStrip.tsx
+│   │   └── CTASection.tsx
+│   │
+│   ├── assistant/
+│   │   ├── AssistantWindow.tsx
+│   │   ├── MessageBubble.tsx
+│   │   ├── PathSelector.tsx
+│   │   ├── ProgressBar.tsx
+│   │   └── TypingIndicator.tsx
+│   │
+│   ├── quiz/
+│   │   └── QuizApp.tsx
+│   │
+│   └── auth/
+│       ├── LoginPage.tsx
+│       └── ProtectedRoute.tsx
+│
 ├── context/
-│   ├── AuthContext.tsx          # Firebase auth state
-│   └── LanguageContext.tsx      # Language preference
+│   ├── AuthContext.tsx
+│   └── LanguageContext.tsx
+│
 ├── lib/
-│   ├── firebase.ts              # Firebase config
-│   ├── gemini.ts                # Gemini client
-│   └── countries.ts             # 195 countries data
-└── types/
-    └── index.ts                 # TypeScript types
+│   ├── firebase.ts
+│   ├── gemini.ts
+│   ├── firestore.ts
+│   ├── countries.ts
+│   ├── animations.ts
+│   └── translate.ts
+│
+├── types/
+│   └── index.ts
+│
+├── public/
+│
+├── .env.local                          # Not committed
+├── .gitignore
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
 ```
 
 ---
 
-## 🔐 Authentication
+## Authentication
 
-VoterLens supports three authentication methods:
+Three sign-in methods are supported:
 
-- **Google Sign-In** — One-click login with Google account
-- **Email & Password** — Traditional sign up and sign in
-- **Phone OTP** — Sign in with phone number verification
+- **Google** — OAuth via Firebase
+- **Email and Password** — Standard registration and login
+- **Phone Number** — OTP verification via Firebase
 
-All protected routes (`/[country]/guide`, `/[country]/quiz`) require authentication. Unauthenticated users are automatically redirected to `/login`.
-
----
-
-## 🤖 How the AI Works
-
-VoterLens uses **Google Gemini AI** to provide personalized election information:
-
-1. User selects their country
-2. User picks a learning path (Registration, Process, Voting Day, Counting, or Free Q&A)
-3. System generates a country-specific prompt with non-partisan rules
-4. Gemini responds with accurate, simple, educational content
-5. User progresses through guided steps or asks free questions
-
-The AI is instructed to:
-- Never take political sides
-- Never mention specific candidates
-- Always be specific to the selected country's laws
-- Respond in the user's preferred language
-- End each response with a follow-up suggestion
+All routes under `/[country]/*` are protected. Users who are not signed in are redirected to `/login`.
 
 ---
 
-## 🏆 Badge System
+## Learning Paths
+
+Each country has five available paths:
+
+| Path | Steps |
+|---|---|
+| Voter Registration | 5 |
+| Election Process | 6 |
+| Voting Day | 4 |
+| Vote Counting | 4 |
+| Ask Your Own Question | Open-ended |
+
+---
+
+## Quiz and Badges
+
+Users can take a country-specific quiz after completing any learning path.
 
 | Score | Badge |
 |---|---|
-| 0–3 correct | 🌱 Civic Newcomer |
-| 4–5 correct | 📖 Informed Voter |
-| 6–7 correct | 🏛️ Democracy Champion |
-| 8/8 correct | ⭐ Election Expert |
+| 0 – 3 | Civic Newcomer |
+| 4 – 5 | Informed Voter |
+| 6 – 7 | Democracy Champion |
+| 8 / 8 | Election Expert |
 
 ---
 
-## 🌐 Supported Languages
+## Supported Languages
 
-English, हिन्दी, Español, Français, العربية, Português, বাংলা, Русский, 日本語, Deutsch, 中文, 한국어, Italiano, Türkçe, اردو, తెలుగు, मराठी, தமிழ், Kiswahili, Nederlands, Polski, Bahasa Indonesia
+English, Hindi, Spanish, French, Arabic, Portuguese, Bengali, Russian, Japanese, German, Chinese, Korean, Italian, Turkish, Urdu, Telugu, Marathi, Tamil, Swahili, Dutch, Polish, Bahasa Indonesia
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
-This project is deployed on **Vercel**.
+The project is deployed on Vercel.
 
-### Deploy your own:
+### Deploy Your Own Instance
 
 1. Fork this repository
-2. Create a new project on [Vercel](https://vercel.com)
-3. Connect your GitHub repository
-4. Add all environment variables in Vercel settings
-5. Add your Vercel domain to Firebase authorized domains
-6. Deploy!
+2. Create a new project on [vercel.com](https://vercel.com)
+3. Import the forked repository
+4. Add all environment variables under Project Settings → Environment Variables
+5. Add your Vercel domain to Firebase Console → Authentication → Authorized Domains
+6. Deploy
 
 ---
 
-## 🤝 Contributing
+## Firebase Setup
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com)
+2. Enable Authentication — Google, Email/Password, Phone
+3. Create a Firestore database in test mode
+4. Register a web app and copy the config values to `.env.local`
 
 ---
 
-## 📄 License
+## Gemini API Setup
 
-This project is licensed under the MIT License.
-
----
-
-## 👩‍💻 Built By
-
-**Sakshi Hanwat**
-
-Built with ❤️ using Google Gemini AI + Firebase for the hackathon.
-
-> *"Democracy starts with understanding."*
+1. Visit [aistudio.google.com](https://aistudio.google.com)
+2. Generate an API key
+3. Add it to `.env.local` as `GEMINI_API_KEY`
 
 ---
 
-## 🙏 Acknowledgements
+## Scripts
 
-- [Google Gemini AI](https://ai.google.dev) — For powering the election assistant
-- [Firebase](https://firebase.google.com) — For authentication and database
-- [Vercel](https://vercel.com) — For hosting
-- [Framer Motion](https://www.framer.com/motion/) — For beautiful animations
-- [Next.js](https://nextjs.org) — For the framework
+```bash
+npm run dev        # Start development server
+npm run build      # Build for production
+npm start          # Start production server
+npm run lint       # Run ESLint
+```
+
+---
+
+## License
+
+MIT
