@@ -19,8 +19,26 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "VoterLens",
-  description: "Understand elections in your country with AI",
+  title: "VoterLens — Understand Elections in Your Country",
+  description: "AI-powered civic education platform for 195 countries. Learn voter registration, election process, voting day, and more in your own language.",
+  keywords: "elections, voting, civic education, democracy, voter registration, AI, gemini",
+  openGraph: {
+    title: "VoterLens — Understand Elections in Your Country",
+    description: "AI-powered civic education platform for 195 countries. Personalized election guides in 22+ languages.",
+    url: "https://voter-lens-yhl8.vercel.app",
+    siteName: "VoterLens",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VoterLens — Understand Elections in Your Country",
+    description: "AI-powered civic education for 195 countries.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -29,12 +47,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#0a0a0f" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${instrumentSerif.variable} ${geistSans.variable} antialiased min-h-screen flex flex-col`}
+        style={{ background: '#0a0a0f' }}
       >
         <LazyMotion features={domAnimation}>
-          <main className="flex-1 flex flex-col">
+          <main 
+            className="flex-1 flex flex-col"
+            role="main"
+            aria-label="VoterLens Application"
+          >
             <AuthProvider>
               <LanguageProvider>
                 {children}
